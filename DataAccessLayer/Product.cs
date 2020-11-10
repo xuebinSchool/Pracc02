@@ -96,7 +96,7 @@ namespace DataAccessLayer
             int stock_Level;
 
             string queryStr = "SELECT * FROM Product WHERE Product_ID = @ProdID";
-     
+
             SqlConnection conn = new SqlConnection(_connStr);
             SqlCommand cmd = new SqlCommand(queryStr, conn);
             cmd.Parameters.AddWithValue("@ProdID", prodID);
@@ -165,5 +165,70 @@ namespace DataAccessLayer
 
             return prodAll;
         }
+
+        public int ProductInsert()
+        {
+            int result = 0;
+            string queryStr = "INSERT INTO Product(Product_Name, Product_Desc, Unit_Price, Product_Image,Stock_Level)"
+                + "values (@Product_Name, @Product_Desc, @Unit_Price, @Product_Image,@Stock_Level)";
+
+            SqlConnection conn = new SqlConnection(_connStr);
+            SqlCommand cmd = new SqlCommand(queryStr, conn);
+            //cmd.Parameters.AddWithValue("@Product_ID", this.Product_ID);
+            cmd.Parameters.AddWithValue("@Product_Name", this.Product_Name);
+            cmd.Parameters.AddWithValue("@Product_Desc", this.Product_Desc);
+            cmd.Parameters.AddWithValue("@Unit_Price", this.Unit_Price);
+            cmd.Parameters.AddWithValue("@Product_Image", this.Product_Image);
+            cmd.Parameters.AddWithValue("@Stock_Level", this.Stock_Level);
+
+            conn.Open();
+
+            result += cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            return result;
+        }
+
+        public int ProductDelete(decimal ID)
+        {
+            string queryStr = "DELETE FROM Product WHERE Product_ID=@ID";
+            //decimal ID_dec = Convert.ToDecimal(ID);
+
+            SqlConnection conn = new SqlConnection(_connStr);
+            SqlCommand cmd = new SqlCommand(queryStr, conn);
+            cmd.Parameters.AddWithValue("@ID", ID);
+            conn.Open();
+            int nofRow = 0;
+            nofRow = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            return nofRow;
+        }//end Delete
+
+        public int ProductUpdate(string pId, string pName, decimal pUnitPrice)
+        {
+            string queryStr = "UPDATE Product SET" +
+            //" Product_ID = @productID, " +
+            " Product_Name = @productName, " +
+            " Unit_Price = @unitPrice " +
+            " WHERE Product_ID = @productID";
+
+            SqlConnection conn = new SqlConnection(_connStr);
+            SqlCommand cmd = new SqlCommand(queryStr, conn);
+            cmd.Parameters.AddWithValue("@productID", pId);
+            cmd.Parameters.AddWithValue("@productName", pName);
+            cmd.Parameters.AddWithValue("@unitPrice", pUnitPrice);
+
+            conn.Open();
+            int nofRow = 0;
+            nofRow = cmd.ExecuteNonQuery();
+
+            conn.Close();
+
+            return nofRow;
+
+        }//end Update
     }
 }
